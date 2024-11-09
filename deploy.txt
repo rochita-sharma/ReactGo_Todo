@@ -1,0 +1,15 @@
+Nginx web serve to serve frontend static files
+
+Mongodb runnning on Host machine
+
+# Compile GO App
+CGO_Enabled=0 GOOS=linux go build -o build/server
+
+# Build react App
+npm run build
+
+# Build docker image
+docker build -t todo-app .
+
+
+

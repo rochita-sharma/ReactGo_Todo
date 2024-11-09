@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+
+  react-app:
+    build: 
+        context: ./client
+        dockerfile: Dockerfile
+    container_name: react-app
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+    depends_on:
+     - server-app
+  
+
+  # Server App Service
+  server-app:
+    # Configuration for building the docker image for the service
+    build: 
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: go-app
+    ports:
+      - "9000:9000" # Forward the exposed port
+    restart: unless-stopped
+    depends_on: 
+      - mongo # This service depends on mongo. Start that first.
+    environment:
+        DB_URI: "mongodb://mongo:27017/"
+        DB_NAME: "test"
+        DB_COLLECTION_NAME: "todolist"
+    command: ["go", "run", "main.go"]
+
+  mongo:
+    image: mongo
+    container_name: mongo
+    restart: unless-stopped

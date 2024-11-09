@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+
+  # App Service
+  app:
+    # Configuration for building the docker image for the service
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: go-app
+    ports:
+      - "9000:9000" # Forward the exposed port 8080 on the container to port 8080 on the host machine
+    restart: unless-stopped
+    depends_on: 
+      - mongo # This service depends on redis. Start that first.
+    environment:
+        DB_URI: "mongodb://mongo:27017/"
+        DB_NAME: "test"
+        DB_COLLECTION_NAME: "todolist"
+    command: ["go", "run", "main.go"]
+
+  mongo:
+    image: mongo
+    container_name: mongo
+    restart: unless-stopped
+    # ports:
+    #     - "27017:27017"
+        
+    
+   
